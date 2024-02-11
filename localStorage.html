@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        form{
+            display: flex;
+            flex-direction: column;
+            width: 30%;
+            margin: 0 auto;
+            
+        }
+        form input{
+            padding: 5px;
+            margin: 5px;
+            border-radius: 25px;
+            border: rgb(142, 16, 16) 1px solid;
+        }
+        form button{
+            padding: 5px;
+            margin: 5px;
+            border-radius: 25px;
+            color:white;
+            background: rgb(16, 78, 16);
+            border: white 1px solid;
+        }
+        
+        .userDiv{
+            width:50%;
+            color:white;
+            background-color: rgba(0, 128, 0, 0.425);
+            height:50px;
+            margin: 5px auto;
+            border-radius: 10px;
+            display: grid;
+            
+            align-items: center;
+            text-align: center;
+            font-size: 20px;
+        }
+        .deleteBtn{
+            color:white;
+            background: red;
+            border-radius: 10px;
+            height: 30px;
+            justify-self: end;
+            align-items: center;
+            
+            
+
+        }
+    </style>
+</head>
+<body>
+    <form>
+        <input type="text" class="usernameInput" placeholder="username..." >
+        <input type="password" class="passwordInput" placeholder="password...">
+        <button onclick="addUsers()" >getInput</button>
+    </form>
+    <div class="usersDiv">
+        
+    </div>
+    
+    <h2></h2>
+<script>
+        let usernameInput = document.querySelector(".usernameInput");
+        let passwordInput = document.querySelector(".passwordInput");
+        let usersDiv = document.querySelector(".usersDiv");
+        let h2 = document.querySelector("h2");
+        
+        
+        let users=[];
+        if(localStorage.getItem("users") !=''){
+            users = JSON.parse(localStorage.getItem("users"))
+        }
+        
+        showData();
+        function addUsers(){
+            let user = {
+                id:Date.now(),
+                username : usernameInput.value,
+                password : passwordInput.value,
+                valid : false
+            }
+            if(user.username!='' && user.password!=''){
+                users.push(user);
+                localStorage.setItem("users" , JSON.stringify(users))
+            }else{
+                alert("enter valid username")
+            }
+            
+        }
+        
+        function showData(){
+            users.forEach(user=>{
+                let userDiv = document.createElement("div");
+                let usernameDiv = document.createElement("span");
+                let deleteBtn = document.createElement("button");
+                let username = document.createTextNode(user.username)
+                deleteBtn.innerHTML = "DELETE";
+                deleteBtn.className = 'deleteBtn';
+                usernameDiv.appendChild(username)
+                userDiv.setAttribute("date-id" , user.id)
+                userDiv.appendChild(usernameDiv);
+                userDiv.appendChild(deleteBtn);
+                userDiv.className = 'userDiv';
+                usersDiv.appendChild(userDiv);
+
+                userDiv.addEventListener("click" , (e)=>{
+                    if(e.target.classList.contains("deleteBtn")){
+                        e.target.parentElement.remove();
+                        deleteUser(e.target.parentElement.getAttribute("date-id"))
+                    }
+                })
+
+            })
+            
+            
+        }
+        
+        function deleteUser(userId){
+            users = users.filter((user) => user.id != userId);
+            localStorage.setItem("users" , JSON.stringify(users));
+        }
+        
+</script>
+</body>
+</html>
